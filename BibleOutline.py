@@ -83,27 +83,22 @@ class BibleOutline(object):
                            'old_testament': [],
                            'new_testament': []}
 
-    def __init(self, plan_type='alpha_omega'):
+    def __init__(self, plan_type='alpha_omega'):
         super().__init__()
         self.plan_type = plan_type
         self.reading_list_ = []
 
         for book in self.reading_plan_books_[self.plan_type]:
             for chapter in range(1, self.bible_outline[book]['chapters'] + 1):
-                self.reading_list_.append('{} {}'.format(book, chapter))
+                self.reading_list_.append((book, chapter))
 
     def reading_list(self):
         return self.reading_list_
 
-    def reading_plan_books(self, plan_name):
+    def books_in_plan(self, plan_name):
         return self.reading_plan_books_[plan_name]
 
-    def chapters(self, title):
+    def chapters_in_book(self, title):
         return self.bible_outline[title]['chapters']
 
-    def set_plan_type(self, plan_type):
-        if plan_type in ['alpha_omega', 'chronological', 'big_five', 'old_testament', 'new_testament']:
-            self.plan_type = plan_type
-        else:
-            raise ValueError('%s is not a valid reading plan type' % plan_type)
 
