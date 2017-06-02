@@ -1,21 +1,128 @@
 #:kivy 1.7.2
 #:import kivy kivy
 
-<cButton>
+<CButton>:
     size_hint_x: None
-    width: 30
+    width: app.button_width
     size_hint_y: None
-    height: 30
+    height: app.button_height
    # background_color: [1, 100, 1, 1]
-    anchor: 'left'
+
+<DURButton>:
+    size_hint_x: None
+    width: app.button_width
+    size_hint_y: None
+    height: app.button_height
+    on_release: PlanNameDropDown.select(text)
+   # background_color: [1, 100, 1, 1]
+
+<TYPEButton>:
+    size_hint_x: None
+    width: app.button_width
+    size_hint_y: None
+    height: app.button_height
+   # background_color: [1, 100, 1, 1]
 
 <DesktopLayout>:
     #:set back_color1 (0, 255, 0)
     #:set font_color (0, 0, 0, 1)
+    old_testament: Old_Testament
+    new_testament: New_Testament
+    plan_len_dropdown: PlanLenDropDown
+    plan_dur_dropdown: PlanNameDropDown
+    BoxLayout:                          # Main View
+        orientation: 'vertical'
+        rows: 6
+        Button:                         # Menu Bar
+            text: 'Future Menu Bar'
+            size_hint_y: None
+            height: app.button_height
+        BoxLayout:                     # Plan Options
+            rows: 1
+            cols: 2
 
-    rows: 5
-    cols: 8
-    GridLayout:
-        anchor: 'left'
+            Button:
+                id: plan_name_btn
+                text: 'Select Plan'
+                on_release: PlanNameDropDown.open(self)
+                size_hint_y: None
+                height: app.button_height
+            Widget:
+                on_parent: PlanNameDropDown.dismiss()
+            DropDown:
+                id: PlanNameDropDown
+                on_select: plan_name_btn.text = '{}'.format(args[1])
 
+            Button:
+                id: plan_len_btn
+                text: 'Select Duration'
+                on_release: PlanLenDropDown.open(self)
+                size_hint_y: None
+                height: app.button_height
+            Widget:
+                on_parent: PlanLenDropDown.dismiss()
+            DropDown:
+                id: PlanLenDropDown
+                on_select: plan_len_btn.text = '{}'.format(args[1])
+                size_hint_y: None
+                height: app.dd_height
 
+        BoxLayout:
+            cols: 4
+            BoxLayout: # Bible Books
+                orientation: 'vertical'
+                Button:
+                    text: 'Old Testament'
+                    size_hint_y: None
+                    height: 30
+                GridLayout:
+                    id: Old_Testament
+                    cols: 8
+                Button:
+                    text: 'New Testament'
+                    size_hint_y: None
+                    height: 30
+                GridLayout:
+                    id: New_Testament
+                    cols: 8
+            Button:
+                text: 'col2'
+            Button:
+                text: 'col3'
+            Button:
+                text: 'col4'
+
+<DesktopLayout2>:
+    old_testament: Old_Testament
+    new_testament: New_Testament
+    weekday_names: Weekday_Names
+    weekday_checkbox: Weekday_CheckBox
+
+    BoxLayout:
+        orientation: 'vertical'
+        rows: 2
+        Button:
+            text: 'Future Menu Bar'
+            size_hint_y: None
+            height: 30
+        BoxLayout:
+            cols: 8
+            BoxLayout:  # Col 1 - book names
+                rows: 2
+                BoxLayout:
+                    orientation: 'vertical'
+                    id: Old_Testament
+                    rows: 39
+                BoxLayout:
+                    orientation: 'vertical'
+                    id: New_Testament
+                    rows: 29
+            BoxLayout:
+                orientation: 'vertical'
+                rows: 68
+                BoxLayout: # weekday names
+                    id: Weekday_Names
+                    cols: 7
+                BoxLayout:  # weekday check boxes
+                    id: Weekday_CheckBox
+                    cols:7
