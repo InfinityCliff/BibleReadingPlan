@@ -1,0 +1,21 @@
+#:kivy 1.7.2
+#:import kivy kivy
+
+<cButton>
+    size_hint_x: None
+    width: 30
+    size_hint_y: None
+    height: 30
+   # background_color: [1, 100, 1, 1]
+    anchor: 'left'
+
+<DesktopLayout>:
+    #:set back_color1 (0, 255, 0)
+    #:set font_color (0, 0, 0, 1)
+
+    rows: 5
+    cols: 8
+    GridLayout:
+        anchor: 'left'
+
+
