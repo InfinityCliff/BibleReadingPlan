@@ -7,7 +7,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import NumericProperty, StringProperty, ReferenceListProperty, ObjectProperty
-
+from BibleOutline import BibleOutline
 
 class CButton(Button):
     pass
@@ -32,8 +32,12 @@ class DesktopLayout(Screen):
         plan_durations = ['30 days', '60 days', '90 days', '6 months', '1 year', '2 years', '3 years']
         self.plan_options.add_widget(self.create_dropdown('Select Duration', plan_durations))
 
-        for i in range(1, 39):
-            self.old_testament.add_widget(CButton(text=str(i)))
+        ot = {k: v for k, v in BibleOutline.bible_outline.items() if v['t'] == 'OT'}
+        import operator
+        ot = sorted(ot.items(), key=operator.itemgetter(0))
+        print(ot)
+        for ot_book, book_info in ot.items():
+            self.old_testament.add_widget(CButton(text=book_info['abbr']))
         for i in range(1, 29):
             self.new_testament.add_widget(CButton(text=str(i)))
 
