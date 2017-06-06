@@ -1,13 +1,15 @@
 #!/usr/bin/kivy
 import kivy
-kivy.require('1.7.2')
-
 from kivy.app import App
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import NumericProperty, StringProperty, ReferenceListProperty, ObjectProperty
-from BibleOutline import BibleOutline
+from BibleOutline import Bible_Outline
+import operator
+
+kivy.require('1.7.2')
+
 
 class CButton(Button):
     pass
@@ -31,15 +33,13 @@ class DesktopLayout(Screen):
         self.plan_options.add_widget(self.create_dropdown('Select Plan', reading_plans))
         plan_durations = ['30 days', '60 days', '90 days', '6 months', '1 year', '2 years', '3 years']
         self.plan_options.add_widget(self.create_dropdown('Select Duration', plan_durations))
-
-        ot = {k: v for k, v in BibleOutline.bible_outline.items() if v['t'] == 'OT'}
-        import operator
-        ot = sorted(ot.items(), key=operator.itemgetter(0))
-        print(ot)
-        for ot_book, book_info in ot.items():
-            self.old_testament.add_widget(CButton(text=book_info['abbr']))
-        for i in range(1, 29):
-            self.new_testament.add_widget(CButton(text=str(i)))
+        bo = Bible_Outline()
+        ot_books = bo.sorted_book_abbr('OT')
+        for abbr, _ in ot_books:
+            self.old_testament.add_widget(CButton(text=abbr))
+        nt_books = bo.sorted_book_abbr('NT')
+        for abbr, _ in nt_books:
+            self.new_testament.add_widget(CButton(text=abbr))
 
     def create_dropdown(self, title, items, height=30):
         dropdown = DropDown()
