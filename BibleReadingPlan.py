@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import icdatetime
 from icdatetime import format_weekday
-
+from Events import EventHook
 
 class ReadingPlan(object):
     """
@@ -48,7 +48,7 @@ class ReadingPlan(object):
     """
     def __init__(self):
         super().__init__()
-        self.plan = BibleOutline.BibleOutline()  # plan outline
+        self.plan = BibleOutline.Bible_Outline()  # plan outline
         self.days_of_week_to_read_ = []          # days of week reading will occur, 1 is Monday
         self.not_read = None                     # days of week reading will not occur
         self.reading_plan = []                   # ordered list of the actual plan by day number 'book:chap-chap'
@@ -62,7 +62,13 @@ class ReadingPlan(object):
         self.plan_id = ''
         self.plan_df = pd.DataFrame()
         self.reading_list = []
-
+        self.controller = None
+        self.observers = [self.controller]
+        self.psalms = False
+        self.proverbs = False
+        self.wisdom = False
+        self.key_dict = {'day_count': self.day_count, 'plan_id': self.plan_id, 'psalms': self.psalms, 'proverbs': self.proverbs,
+                         'wisdom': self.wisdom}
         pd.set_option('display.width', 1000)
 
     def __str__(self):
@@ -76,6 +82,15 @@ class ReadingPlan(object):
                "Chapters Per Day: {}\n" \
                "df: {}".format(self.__class__.__name__, self.plan_id, self.day_count, self.book_count,
                                self.chap_count, self.chaptersPerDay, self.plan_df)
+
+    def set_controller(self, controller):
+        self.controller = controller
+
+    def update(self, **kwargs):
+        if kwargs:
+            for key, value in kwargs:
+                self.key_dict[key] = value
+        print(self.key_dict)
 
     def define_reading_plan(self, plan_id='alpha_omega', day_count=365, read=(1, 2, 3, 4, 5, 6, 7), not_read=None,
                             start_day='Sunday'):
