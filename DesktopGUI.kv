@@ -14,7 +14,6 @@
     height: app.button_height
     # background_color: [1, 100, 1, 1]
 
-
 <DesktopLayout>:
     id: DesktopLayout
     #:set back_color1 (0, 255, 0)
@@ -37,7 +36,6 @@
             id: PlanOptions
             size_hint: 1, .05
             pos_hint: {'x': 0, 'y': .95}
-
         BoxLayout:
             cols: 2
             BoxLayout: # Bible Books
@@ -76,6 +74,11 @@
                         text: 'Wisdom A Day'
                     Switch:
 
+
+<PlanName>:
+    id: plan_name_dd
+
+
 <DesktopLayoutCondensed>:
     #:set back_color1 (0, 255, 0)
     #:set font_color (0, 0, 0, 1)
@@ -94,23 +97,23 @@
         BoxLayout:                     # Plan Options
             id: PlanOptions
             orientation: 'vertical'
-            size_hint: 1, .05
-            pos_hint: {'x': 0, 'y': .95}
+            # size_hint: 1, .05
+            # pos_hint: None # {'x': 0, 'y': .95}
         Label:
             text: 'Psalm A Day'
         Switch:
             id: PsalmsSwitch
-            on_active: root.switch_callback('psalmswitch', self.active)
+            on_active: root.psalm_callback(self.active)
         Label:
             text: 'Proverbs A Day'
         Switch:
             id: ProverbsSwitch
-            on_active: root.switch_callback('proverbsswitch', self.active)
+            on_active: root.proverb_callback(self.active)
         Label:
             text: 'Wisdom A Day'
         Switch:
             id: WisdomSwitch
-            on_active: root.switch_callback('wisdomswitch', self.active)
+            on_active: root.wisdom_callback(self.active)
         Button:
             text: 'Create Plan'
             on_release: print('clicked')

@@ -8,6 +8,7 @@ from kivy.properties import NumericProperty, StringProperty, ReferenceListProper
 from BibleOutline import Bible_Outline
 import operator
 from Events import EventHook
+import re
 
 kivy.require('1.7.2')
 
@@ -48,6 +49,8 @@ def create_dropdown(title, items, height=30, evt=None):
 
     return mainbutton
 
+class PlanName(DropDown):
+    pass
 
 class CButton(Button):
     pass
@@ -72,20 +75,22 @@ class Desktop(Screen):
     def set_controller(self, controller):
         self._controller = controller
 
-    def send_update(self):
-        data = {}
+    def psalm_callback(self, value):
+        self._controller.update_model(psalms=value)
 
-    def switch_callback(self, instance, value):
-        if instance is 'psalmswitch':
-            self.onSwitchPsalm.fire(value=value)
-            print('fired')
+    def proverb_callback(self, value):
+        self._controller.update_model(proverbs=value)
 
-        print(instance, ' is ', value)
+    def wisdom_callback(self, value):
+        self._controller.update_model(wisdom=value)
 
     def switch_values(self):
         return self.psalms_switch.active, \
                self.proverbs_switch.active, \
                self.wisdom_switch.active
+
+class TestLayout(Desktop):
+    pass
 
 class DesktopLayoutCondensed(Desktop):
     plan_options = ObjectProperty(None)
@@ -128,11 +133,16 @@ class DesktopGUIApp(App):
     button_height = NumericProperty(30)
     button_width = NumericProperty(30)
     label_height = NumericProperty(30)
+    __view = None
+    __controller = None
 
     def build(self):
+        self.__view = DesktopLayoutCondensed()
+        self.__view.set_controller(self.__controller)
+        return self.__view
 
-        return DesktopLayoutCondensed()
-
+    def set_controller(self, controller):
+        self.__controller = controller
 
 if __name__ == '__main__':
     DesktopGUIApp().run()

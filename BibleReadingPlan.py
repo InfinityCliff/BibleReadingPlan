@@ -87,10 +87,13 @@ class ReadingPlan(object):
         self.controller = controller
 
     def update(self, **kwargs):
-        if kwargs:
-            for key, value in kwargs:
+        for key, value in kwargs.items():
+            if self.key_dict.get(key) is not None:
                 self.key_dict[key] = value
+            else:
+                raise ValueError("{} is not a valid key in key_dict".format(key))
         print(self.key_dict)
+
 
     def define_reading_plan(self, plan_id='alpha_omega', day_count=365, read=(1, 2, 3, 4, 5, 6, 7), not_read=None,
                             start_day='Sunday'):
