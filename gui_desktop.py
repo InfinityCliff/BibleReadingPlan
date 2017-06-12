@@ -13,12 +13,7 @@ import re
 kivy.require('1.7.2')
 
 
-def create_dropdown(title, items, height=30, evt=None):
-
-    def update_dd(dd, evt, msg):
-        evt()
-        dd.open()
-        print(msg)
+def create_dropdown(title, items, height=30):
 
     dropdown = DropDown()
 
@@ -38,16 +33,12 @@ def create_dropdown(title, items, height=30, evt=None):
     # note: all the bind() calls pass the instance of the caller (here, the
     # mainbutton instance) as the first argument of the callback (here,
     # dropdown.open.).
-    if evt is None:
-        mainbutton.bind(on_release=dropdown.open)
-    else:
-        mainbutton.bind(on_release=update_dd(dropdown, evt, mainbutton.text))
-
+    mainbutton.bind(on_release=dropdown.open)
     # one last thing, listen for the selection in the dropdown list and
     # assign the data to the button text.
     dropdown.bind(on_select=lambda instance, x: setattr(mainbutton, 'text', x))
 
-    return mainbutton
+    return mainbutton, dropdown
 
 class PlanName(DropDown):
     pass
@@ -61,16 +52,26 @@ class DDButton(Button):
 
 
 class Desktop(Screen):
-    dd_btn = ObjectProperty(None)
-    psalms_switch = ObjectProperty(None)
-    proverbs_switch = ObjectProperty(None)
-    wisdom_switch = ObjectProperty(None)
+    # dd_btn = ObjectProperty(None)
+    # psalms_switch = ObjectProperty(None)
+    # proverbs_switch = ObjectProperty(None)
+    # wisdom_switch = ObjectProperty(None)
+    rpu = ObjectProperty(None)
+    pd = ObjectProperty(None)
+    dd = ObjectProperty(None)
+    dd2 = ObjectProperty(None)
 
     def __init__(self, *args, **kwargs):
         super(Desktop, self).__init__(*args, **kwargs)
         self._controller = None
         self.onChange = EventHook()
         self.onSwitchPsalm = EventHook()
+
+    def on_rpu(self, *args):
+        print('rpu: ', self.rpu.text)
+
+    def on_dd(self, *args):
+        print('dd', self.dd)
 
     def set_controller(self, controller):
         self._controller = controller
@@ -89,27 +90,32 @@ class Desktop(Screen):
                self.proverbs_switch.active, \
                self.wisdom_switch.active
 
+    def reading_plan_update(self):
+        print('reading_plan_update')
+
 class TestLayout(Desktop):
     pass
 
+
 class DesktopLayoutCondensed(Desktop):
-    plan_options = ObjectProperty(None)
 
     def __init__(self, *args, **kwargs):
         super(DesktopLayoutCondensed, self).__init__(*args, **kwargs)
         reading_plans = ['Alpha-Omega', 'Chronological', 'Gospels', 'Chrono-Gospel', 'Old Testament',
                          'New Testament', 'Big Five', 'Wisdom']
-        self.plan_options.add_widget(create_dropdown('Select Plan', reading_plans))
-        self.plan_type_change = EventHook()
+        self.rpu, self.dd = create_dropdown('Select Plan', reading_plans)
+        self.ids.PlanOptions.add_widget(self.rpu)
+
         plan_durations = ['30 days', '60 days', '90 days', '6 months', '1 year', '2 years', '3 years']
-        self.plan_options.add_widget(create_dropdown('Select Duration', plan_durations))
-        self.duration_change = EventHook()
+        self.pd, self.dd2 = create_dropdown('Select Duration', plan_durations)
+        self.ids.PlanOptions.add_widget(self.pd)
 
 
 class DesktopLayout(Desktop):
     old_testament = ObjectProperty(None)
     new_testament = ObjectProperty(None)
     plan_options = ObjectProperty(None)
+
 
     def __init__(self, *args, **kwargs):
         super(DesktopLayout, self).__init__(*args, **kwargs)
@@ -132,7 +138,7 @@ class DesktopGUIApp(App):
 
     button_height = NumericProperty(30)
     button_width = NumericProperty(30)
-    label_height = NumericProperty(30)
+    # label_height = NumericProperty(30)
     __view = None
     __controller = None
 
