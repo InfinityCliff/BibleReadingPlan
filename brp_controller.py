@@ -17,8 +17,7 @@ class Controller(object):
     def update_model(self, **kwargs):
         self.__dataset.update(**kwargs)
 
-
-    def bulid_plan(self):
+    def create_plan(self):
         self.__dataset.create_plan()
 
 
