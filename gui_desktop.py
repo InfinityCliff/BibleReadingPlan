@@ -34,18 +34,25 @@ class Desktop(Screen):
             self.ProverbsSwitch.disabled = False
         self._controller.update_model(wisdom=value)
 
-    def select_plan_name(self, value):
+    def select_plan_name(self, name):
         self.ids.PlanName.selected = True
-        self._controller.update_model(plan_id=value)
-        self.enable_create(self.ids.PlanDuration.selected and self.ids.PlanName.selected)
+        self._controller.update_model(plan_id=name)
+        self.enable_create()
 
-    def select_plan_duration(self, value):
+    def select_plan_duration(self, duration):
         self.ids.PlanDuration.selected = True
-        self._controller.update_model(day_count=value)
-        self.enable_create(self.ids.PlanDuration.selected and self.ids.PlanName.selected)
+        self._controller.update_model(day_count=duration)
+        self.enable_create()
 
-    def enable_create(self, value):
-        self.ids.CreateButton.disabled = not value
+    def select_week_day(self, day):
+        self.ids.WeekDay.selected = True
+        self._controller.update_model(weekday=day)
+        self.enable_create()
+
+    def enable_create(self):
+        self.ids.CreateButton.disabled = not (self.ids.PlanDuration.selected and
+                                              self.ids.PlanName.selected and
+                                              self.ids.WeekDay.selected)
 
     def create_plan(self):
         self._controller.create_plan()
@@ -59,7 +66,7 @@ class DesktopLayout(Desktop):
                          'New Testament', 'Big Five', 'Wisdom']
         self.ids.PlanName.values = reading_plans
 
-        plan_durations = ['30 days', '60 days', '90 days', '6 months', '1 year', '2 years', '3 years']
+        plan_durations = ['30 Days', '60 Days', '90 Days', '6 Months', '1 Year', '2 Years', '3 Years']
         self.ids.PlanDuration.values = plan_durations
 
 

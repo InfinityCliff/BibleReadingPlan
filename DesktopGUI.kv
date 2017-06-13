@@ -39,6 +39,12 @@
             text: 'Select Plan Duration'
             on_text: root.select_plan_duration(self.text)
             selected: False
+        Spinner:
+            id: WeekDay
+            text: 'Day of Week to Start Plan'
+            values: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            selected: False
+            on_text: root.select_week_day(self.text)
         Label:
             text: 'Psalm A Day'
         Switch:

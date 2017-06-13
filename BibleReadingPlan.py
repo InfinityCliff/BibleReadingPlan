@@ -52,8 +52,8 @@ class ReadingPlan(object):
         self.days_of_week_to_read_ = []          # days of week reading will occur, 1 is Monday
         self.not_read = None                     # days of week reading will not occur
         self.reading_plan = []                   # ordered list of the actual plan by day number 'book:chap-chap'
-        self.day_count = 0                       # count of number of days in plan
-        self.start_day = ''                      # day of week to start reading plan
+        self.day_count = 365                     # count of number of days in plan
+        self.start_day = 'Sunday'                # day of week to start reading plan
         self.week_count = 0                      # count of number of weeks in plan
         self.book_count = 0                      # count of number of books in plan
         self.chap_count = 0                      # count of number of chapters in plan
@@ -68,7 +68,7 @@ class ReadingPlan(object):
         self.proverbs = False
         self.wisdom = False
         self.key_dict = {'day_count': self.day_count, 'plan_id': self.plan_id, 'psalms': self.psalms, 'proverbs': self.proverbs,
-                         'wisdom': self.wisdom}
+                         'wisdom': self.wisdom, 'weekday': self.start_day}
         pd.set_option('display.width', 1000)
 
     def __str__(self):
@@ -86,12 +86,25 @@ class ReadingPlan(object):
     def set_controller(self, controller):
         self.controller = controller
 
+    @staticmethod
+    def convert_text_duration_to_days(days_str):
+        days_ = {'30 Days': 30, '60 Days': 60, '90 Days': 90, '6 months': 180,
+                 '1 Year': 365, '2 Years': 730, '3 Year': 1095}
+        return days_[days_str]
+
     def update(self, **kwargs):
         for key, value in kwargs.items():
             if self.key_dict.get(key) is not None:
                 self.key_dict[key] = value
             else:
                 raise ValueError("{} is not a valid key in key_dict".format(key))
+
+        self.day_count = self.convert_text_duration_to_days(self.key_dict['day_count'])
+        self.plan_id = self.key_dict['plan_id']
+        self.psalms = self.key_dict['psalms']
+        self.proverbs = self.key_dict['proverbs']
+        self.wisdom = self.key_dict['wisdom']
+        self.start_day = self.key_dict['weekday']
 
     def define_reading_plan(self, plan_id='alpha_omega', day_count=365, read=(1, 2, 3, 4, 5, 6, 7), not_read=None,
                             start_day='Sunday'):
@@ -183,6 +196,7 @@ class ReadingPlan(object):
             self.reading_plan[i] = self.daily_reading(chapters)
 
         week_list = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        print(self.start_day)
         shift = week_list.index(format_weekday(self.start_day, format_='full'))
         for s in range(1, shift + 1):
             self.reading_plan.insert(0, None)
