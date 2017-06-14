@@ -1,46 +1,44 @@
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ListProperty
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
 
+# Create both screens. Please note the root.manager.current: this is how
+# you can control the ScreenManager from kv. Each screen has by default a
+# property manager that gives you the instance of the ScreenManager used.
+Builder.load_string("""
+<MenuScreen>:
+    BoxLayout:
+        Button:
+            text: 'Goto settings'
+            on_press: root.manager.current = 'settings'
+        Button:
+            text: 'Quit'
 
-class RootWidget(BoxLayout):
+<SettingsScreen>:
+    BoxLayout:
+        Button:
+            text: 'My settings button'
+        Button:
+            text: 'Back to menu'
+            on_press: root.manager.current = 'menu'
+""")
 
-    def __init__(self, **kwargs):
-        super(RootWidget, self).__init__(**kwargs)
-        self.add_widget(Button(text='btn 1'))
-        cb = CustomBtn()
-        cb.bind(pressed=self.btn_pressed)
-        self.add_widget(cb)
-        self.add_widget(Button(text='btn 2'))
+# Declare both screens
+class MenuScreen(Screen):
+    pass
 
-    def btn_pressed(self, instance, pos):
-        print ('pos: printed from root widget: {pos}'.format(pos=pos))
+class SettingsScreen(Screen):
+    pass
 
-
-class CustomBtn(Widget):
-
-    pressed = ListProperty([0, 0])
-
-    def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            self.pressed = touch.pos
-            # we consumed the touch. return False here to propagate
-            # the touch further to the children.
-            return True
-        return super(CustomBtn, self).on_touch_down(touch)
-
-    def on_pressed(self, instance, pos):
-        print ('pressed at {pos}'.format(pos=pos))
-
+# Create the screen manager
+sm = ScreenManager()
+sm.add_widget(MenuScreen(name='menu'))
+sm.add_widget(SettingsScreen(name='settings'))
 
 class TestApp(App):
 
     def build(self):
-        return RootWidget()
-
+        return sm
 
 if __name__ == '__main__':
     TestApp().run()
-

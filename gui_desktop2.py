@@ -2,71 +2,11 @@
 import kivy
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.properties import NumericProperty
-from kivy.lang import Builder
+from kivy.graphics.instructions import InstructionGroup
 
 kivy.require('1.7.2')
-
-Builder.load_string("""
-<MenuMain>:
-    BoxLayout:
-        Button:
-            id: LeftButton
-            text: 'Menu'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1} 
-        Label:
-            text: 'Bible Reading Plan'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-        Button:
-            text: 'new'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-            on_release: root.sm.current(NewPlan)
-
-<NewPlanMenu>:
-    BoxLayout:
-        Button:
-            id: LeftButton
-            text: 'Back'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1} 
-        Label:
-            text: 'Bible Reading Plan'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-        Button:
-            text: 'quit'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-                        
-<StartScreen>:
-    id: StartScreen
-    BoxLayout:
-        orientation: 'vertical'
-        MenuMain:
-
-<NewPlan>:
-    id: NewPlanScreen
-    BoxLayout:
-        orientation: 'vertical'
-        NewPlanMenu:    
-""")
-
-
-class MenuMain(BoxLayout):
-    pass
-
-
-class StartScreen(Screen):
-    pass
-
-
-class NewPlan(BoxLayout):
-    pass
 
 
 class Desktop(Screen):
@@ -138,7 +78,7 @@ class CButton(Button):
 
 # Create the screen manager
 sm = ScreenManager()
-sm.add_widget(StartScreen(name='start'))
+sm.add_widget(DesktopLayout(name='newplan'))
 # sm.add_widget(SettingsScreen(name='settings'))
 
 class DesktopGUIApp(App):
@@ -151,8 +91,8 @@ class DesktopGUIApp(App):
     __controller = None
 
     def build(self):
-        #self.__view = DesktopLayout()
-        #self.__view.set_controller(self.__controller)
+        self.__view = DesktopLayout()
+        self.__view.set_controller(self.__controller)
         return sm
 
     def set_controller(self, controller):

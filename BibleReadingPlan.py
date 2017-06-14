@@ -98,8 +98,10 @@ class ReadingPlan(object):
                 self.key_dict[key] = value
             else:
                 raise ValueError("{} is not a valid key in key_dict".format(key))
-
-        self.day_count = self.convert_text_duration_to_days(self.key_dict['day_count'])
+        if type(self.key_dict['day_count']) is not int:
+            self.day_count = self.convert_text_duration_to_days(self.key_dict['day_count'])
+        else:
+            self.day_count = self.key_dict['day_count']
         self.plan_id = self.key_dict['plan_id']
         self.psalms = self.key_dict['psalms']
         self.proverbs = self.key_dict['proverbs']
