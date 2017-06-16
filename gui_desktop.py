@@ -10,50 +10,96 @@ from kivy.lang import Builder
 kivy.require('1.7.2')
 
 Builder.load_string("""
-<MenuMain>:
-    BoxLayout:
-        Button:
-            id: LeftButton
-            text: 'Menu'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1} 
-        Label:
-            text: 'Bible Reading Plan'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-        Button:
-            text: 'new'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-            on_release: root.sm.current(NewPlan)
-
-<NewPlanMenu>:
-    BoxLayout:
-        Button:
-            id: LeftButton
-            text: 'Back'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1} 
-        Label:
-            text: 'Bible Reading Plan'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
-        Button:
-            text: 'quit'
-            size_hint_y: 0.05
-            pos_hint: {'top': 1}
                         
 <StartScreen>:
-    id: StartScreen
+    id: Start_Screen
     BoxLayout:
         orientation: 'vertical'
-        MenuMain:
+        BoxLayout:
+            Button:
+                id: LeftButton
+                text: 'Menu'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'menu'
+            Label:
+                text: 'Bible Reading Plan'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
+            Button:
+                text: 'new'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
+                on_release: root.manager.current = 'newplan'
+                
+<NewPlanScreen>:
+    id: NewPlan_Screen
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Button:
+                id: LeftButton
+                text: '<'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'start'
+            Label:
+                text: 'New Plan'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
+            Button:
+                text: 'quit'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
 
-<NewPlan>:
-    id: NewPlanScreen
+[MButton@Button]
+    size_hint_y: 0.05
+    
+<MenuScreen>:
     BoxLayout:
         orientation: 'vertical'
-        NewPlanMenu:    
+        BoxLayout:
+            size_hint_y: 0.05               
+            Button:
+                id: LeftButton
+                text: '<'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'start'
+            Label:
+                text: 'Menu'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+        Button:
+            text: 'Settings'
+            size_hint_y: 0.05
+            pos_hint: {'top': 1}
+            on_release: root.manager.current = 'settings'
+        Button:
+            text: 'About'
+            size_hint_y: 0.05
+        Button:
+            text: 'Help'     
+            size_hint_y: 0.05
+        Button:
+            text: 'Feedback'
+            size_hint_y: 0.05
+            
+<SettingsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Button:
+                id: LeftButton
+                text: '<'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'menu'
+            Label:
+                text: 'Settings'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
+
 """)
 
 
@@ -61,11 +107,23 @@ class MenuMain(BoxLayout):
     pass
 
 
+class NewPlanMenu(BoxLayout):
+    pass
+
+
 class StartScreen(Screen):
     pass
 
 
-class NewPlan(BoxLayout):
+class MenuScreen(Screen):
+    pass
+
+
+class SettingsScreen(Screen):
+    pass
+
+
+class NewPlanScreen(Screen):
     pass
 
 
@@ -139,7 +197,9 @@ class CButton(Button):
 # Create the screen manager
 sm = ScreenManager()
 sm.add_widget(StartScreen(name='start'))
-# sm.add_widget(SettingsScreen(name='settings'))
+sm.add_widget(NewPlanScreen(name='newplan'))
+sm.add_widget(SettingsScreen(name='settings'))
+sm.add_widget(MenuScreen(name='menu'))
 
 class DesktopGUIApp(App):
     title = 'Bible Reading Plan'
