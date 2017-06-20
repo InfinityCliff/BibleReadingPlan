@@ -1,44 +1,41 @@
+#!python
+#!/usr/bin/env python
 from kivy.app import App
-from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.clock import Clock
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from functools import partial
 
-# Create both screens. Please note the root.manager.current: this is how
-# you can control the ScreenManager from kv. Each screen has by default a
-# property manager that gives you the instance of the ScreenManager used.
-Builder.load_string("""
-<MenuScreen>:
-    BoxLayout:
-        Button:
-            text: 'Goto settings'
-            on_press: root.manager.current = 'settings'
-        Button:
-            text: 'Quit'
+class Test(App):
+    def create_clock(self, widget, touch, *args):
+        callback = partial(self.menu, touch)
+        Clock.schedule_once(callback, 2)
+        touch.ud['event'] = callback
 
-<SettingsScreen>:
-    BoxLayout:
-        Button:
-            text: 'My settings button'
-        Button:
-            text: 'Back to menu'
-            on_press: root.manager.current = 'menu'
-""")
+    def delete_clock(self, widget, touch, *args):
+        Clock.unschedule(touch.ud['event'])
 
-# Declare both screens
-class MenuScreen(Screen):
-    pass
+    def menu(self, touch, *args):
+        menu = BoxLayout(
+            size_hint=(None, None),
+            orientation='vertical',
+            center=touch.pos)
+        menu.add_widget(Button(text='a'))
+        menu.add_widget(Button(text='b'))
+        close = Button(text='close')
+        close.bind(on_release=partial(self.close_menu, menu))
+        menu.add_widget(close)
+        self.root.add_widget(menu)
 
-class SettingsScreen(Screen):
-    pass
-
-# Create the screen manager
-sm = ScreenManager()
-sm.add_widget(MenuScreen(name='menu'))
-sm.add_widget(SettingsScreen(name='settings'))
-
-class TestApp(App):
+    def close_menu(self, widget, *args):
+        self.root.remove_widget(widget)
 
     def build(self):
-        return sm
+        self.root = FloatLayout()
+        self.root.bind(
+            on_touch_down=self.create_clock,
+            on_touch_up=self.delete_clock)
 
 if __name__ == '__main__':
-    TestApp().run()
+    Test().run()

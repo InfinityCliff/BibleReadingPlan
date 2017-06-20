@@ -6,6 +6,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.properties import NumericProperty
 from kivy.lang import Builder
+from kivy.clock import Clock
+from functools import partial
 
 kivy.require('1.7.2')
 
@@ -21,7 +23,7 @@ Builder.load_string("""
                 text: 'Menu'
                 size_hint_y: 0.05
                 pos_hint: {'top': 1} 
-                on_release: root.manager.current = 'menu'
+                on_release: root.manager.current = 'mainmenu'
             Label:
                 text: 'Bible Reading Plan'
                 size_hint_y: 0.05
@@ -31,14 +33,14 @@ Builder.load_string("""
                 size_hint_y: 0.05
                 pos_hint: {'top': 1}
                 on_release: root.manager.current = 'newplan'
-                
+            
 <NewPlanScreen>:
     id: NewPlan_Screen
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
             Button:
-                id: LeftButton
+                id: New_Back
                 text: '<'
                 size_hint_y: 0.05
                 pos_hint: {'top': 1} 
@@ -55,7 +57,7 @@ Builder.load_string("""
 [MButton@Button]
     size_hint_y: 0.05
     
-<MenuScreen>:
+<MainMenuScreen>:
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
@@ -90,32 +92,75 @@ Builder.load_string("""
         orientation: 'vertical'
         BoxLayout:
             Button:
-                id: LeftButton
+                id: Set_Back
                 text: '<'
                 size_hint_y: 0.05
                 pos_hint: {'top': 1} 
-                on_release: root.manager.current = 'menu'
+                on_release: root.manager.current = 'mainmenu'
             Label:
                 text: 'Settings'
                 size_hint_y: 0.05
                 pos_hint: {'top': 1}
 
+<PlanOverviewScreen>
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Button:
+                id: PO_Back
+                text: '<'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'start'
+            Label:
+                text: 'Plan Overview'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}
+
+<ReadScreen>
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Button:
+                id: Read_Back
+                text: '<'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1} 
+                on_release: root.manager.current = 'mainmenu'
+            Label:
+                text: 'Plan Overview'
+                size_hint_y: 0.05
+                pos_hint: {'top': 1}                
+                
 """)
 
+
+
+
+class StartScreen(Screen):
+    def __init__(self, *args, **kwargs):
+        super(StartScreen, self).__init__(*args, **kwargs)
+        # https://github.com/kivy/kivy/wiki/Menu-on-long-touch
+        self.bind(
+            on_touch_down=self.create_clock,
+            on_touch_up=self.delete_clock)
+
+    def create_clock(self, widget, touch, *args):
+        callback = partial(self.showplanoverview, touch)
+        Clock.schedule_once(callback, 2)
+        touch.ud['event'] = callback
+
+    def delete_clock(self, widget, touch, *args):
+        Clock.unschedule(touch.ud['event'])
+
+    def showplanoverview(self, touch, *args):
+        sm.current = 'planoverview'
 
 class MenuMain(BoxLayout):
     pass
 
 
-class NewPlanMenu(BoxLayout):
-    pass
-
-
-class StartScreen(Screen):
-    pass
-
-
-class MenuScreen(Screen):
+class MainMenuScreen(Screen):
     pass
 
 
@@ -124,6 +169,17 @@ class SettingsScreen(Screen):
 
 
 class NewPlanScreen(Screen):
+    pass
+
+
+class NewPlanMenu(BoxLayout):
+    pass
+
+
+class PlanOverviewScreen(Screen):
+    pass
+
+class ReadScreen(Screen):
     pass
 
 
@@ -199,7 +255,10 @@ sm = ScreenManager()
 sm.add_widget(StartScreen(name='start'))
 sm.add_widget(NewPlanScreen(name='newplan'))
 sm.add_widget(SettingsScreen(name='settings'))
-sm.add_widget(MenuScreen(name='menu'))
+sm.add_widget(MainMenuScreen(name='mainmenu'))
+sm.add_widget(PlanOverviewScreen(name='planoverview'))
+sm.add_widget(ReadScreen(name='read'))
+
 
 class DesktopGUIApp(App):
     title = 'Bible Reading Plan'
